@@ -1,0 +1,3 @@
+# order-service/requirements.txt
+flask==2.0.0
+requests==2.19.1   # outdated on purpose
