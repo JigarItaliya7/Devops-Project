@@ -11,10 +11,10 @@ on:
 
 jobs:
   # -----------------------
-  # Step 1: Build and Test
+  # Step 1: Build and Test Services
   # -----------------------
   build-test:
-    name: Build and Test Services
+    name: Build and Test Microservices
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -25,11 +25,15 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run Tests
-        run: npm test
+      - name: Install and Test Services
+        run: |
+          for service in order-service payment-service; do
+            echo "Installing and testing $service..."
+            cd $service
+            npm install
+            npm test
+            cd ..
+          done
 
   # -----------------------
   # Step 2: Build Docker Images
@@ -77,4 +81,9 @@ jobs:
           version: '1.30.0'
 
       - name: Set Kubeconfig
-        run: echo "${{ secrets.KUBECONFIG }}" > kubeconfig && export KUBECONFIG=kubec
+        run: echo "${{ secrets.KUBECONFIG }}" > kubeconfig && export KUBECONFIG=kubeconfig
+
+      - name: Deploy Services
+        run: |
+          kubectl apply -f k8s/order-service.yaml
+          kubectl apply -f k8s/payment-service.yaml
