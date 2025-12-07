@@ -1,0 +1,9 @@
+service,tool,CRITICAL,HIGH,MEDIUM,LOW,UNKNOWN,TOTAL,commonWithOtherTool
+order-service,trivy,0,5,22,51,0,78,23
+order-service,grype,0,6,24,8,40,78,23
+payment-service,trivy,22,553,764,97,4,1440,216
+payment-service,grype,19,443,478,101,951,1992,216
+product-service,trivy,22,553,761,96,4,1436,216
+product-service,grype,19,442,475,101,951,1988,216
+user-service,trivy,22,553,762,96,4,1437,216
+user-service,grype,19,441,476,101,951,1988,216
