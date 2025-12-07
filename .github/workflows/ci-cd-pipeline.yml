@@ -35,10 +35,10 @@ jobs:
 
       - name: Push Docker Images
         run: |
-          docker tag myorg/order-service myorg/order-service:latest
-          docker tag myorg/payment-service myorg/payment-service:latest
-          docker push myorg/order-service:latest
-          docker push myorg/payment-service:latest
+           docker build -t vrunda0308/order-service ./order-service
+           docker push vrunda0308/order-service:latest
+           docker build -t vrunda0308/payment-service ./payment-service
+           docker push vrunda0308/payment-service:latest
 
   # -----------------------
   # Step 2: Deploy to Kubernetes
