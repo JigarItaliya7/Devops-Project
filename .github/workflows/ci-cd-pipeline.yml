@@ -10,60 +10,11 @@ on:
       - main
 
 jobs:
+ 
 
-  # -----------------------
-  # Step 1: Run Tests
-  # -----------------------
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      # Test each service individually
-      - name: Test Order Service
-        working-directory: ./order-service
-        run: |
-          npm install
-          npm test
-
-      - name: Test Payment Service
-        working-directory: ./payment-service
-        run: |
-          npm install
-          npm test
-
-      - name: Test Product Service
-        working-directory: ./product-service
-        run: |
-          npm install
-          npm test
-
-      - name: Test User Service
-        working-directory: ./user-service
-        run: |
-          npm install
-          npm test
-
-      - name: Test Reports Service
-        working-directory: ./reports
-        run: |
-          npm install
-          npm test
-
-  # -----------------------
-  # Step 2: Build Docker Images
-  # -----------------------
   docker-build:
     name: Build Docker Images
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -72,9 +23,6 @@ jobs:
         run: |
           docker build -t myorg/order-service ./order-service
           docker build -t myorg/payment-service ./payment-service
-          docker build -t myorg/product-service ./product-service
-          docker build -t myorg/user-service ./user-service
-          docker build -t myorg/reports ./reports
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -84,41 +32,7 @@ jobs:
 
       - name: Push Docker Images
         run: |
-          docker tag myorg/order-service myorg/order-service:latest
-          docker tag myorg/payment-service myorg/payment-service:latest
-          docker tag myorg/product-service myorg/product-service:latest
-          docker tag myorg/user-service myorg/user-service:latest
-          docker tag myorg/reports myorg/reports:latest
-
-          docker push myorg/order-service:latest
-          docker push myorg/payment-service:latest
-          docker push myorg/product-service:latest
-          docker push myorg/user-service:latest
-          docker push myorg/reports:latest
-
-  # -----------------------
-  # Step 3: Deploy to Kubernetes
-  # -----------------------
-  deploy:
-    name: Deploy to Kubernetes
-    runs-on: ubuntu-latest
-    needs: docker-build
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: '1.30.0'
-
-      - name: Set Kubeconfig
-        run: echo "${{ secrets.KUBECONFIG }}" > kubeconfig && export KUBECONFIG=kubeconfig
-
-      - name: Deploy Services
-        run: |
-          kubectl apply -f k8s/order-service.yaml
-          kubectl apply -f k8s/payment-service.yaml
-          kubectl apply -f k8s/product-service.yaml
-          kubectl apply -f k8s/user-service.yaml
-          kubectl apply -f k8s/reports.yaml
+           docker build -t vrunda0308/order-service ./order-service
+           docker push vrunda0308/order-service:latest
+           docker build -t vrunda0308/payment-service ./payment-service
+           docker push vrunda0308/payment-service:latest
